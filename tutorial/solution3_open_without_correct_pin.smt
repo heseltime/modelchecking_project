@@ -91,7 +91,7 @@
 ))
 
 (define-fun start () Int 0)
-(define-fun end () Int 6)
+(define-fun end () Int 30)
 
 (assert (forall ((i Int)) (=>
     (and (<= start i) (<= i end))
