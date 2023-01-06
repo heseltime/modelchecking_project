@@ -77,6 +77,7 @@
 (define-fun is_open ((i Int)) Bool
     ((_ is open) (keypadstate i)))
 
+; bug : is_not_closing when pressing C 
 (define-fun is_not_closing ((i Int)) Bool (=>
     (and
         ((_ is open) (keypadstate i))
@@ -144,12 +145,24 @@
 (define-fun impl_skip ((i Int)) Bool
     (= (implstate (+ i 1)) (implstate i)))
 
-; first try 
+; bug : is_not_closing when pressing C (-> equals a test for the cancel_key function)
 (define-fun impl_C_does_not_close_door ((i Int)) Bool 
+    ; if
+    (and 
     (=> (= (implstate i) 5)        ; if the door is open 
-        (= (implstate (+ i 1)) 1)) ; if the door is locked with 0 attempts
+        (= (implstate (+ i 1)) 1)) ; then the door is locked with 0 attempts
     ; else
+    (=> (not (= (implstate i) 5))  ; else statement 
+        (= (implstate (+ i 1)) 5)) ; then the number of digits read is 0 & state is open 
+    )
 )
+
+; old code 
+;(define-fun impl_C_does_not_close_door ((i Int)) Bool 
+;   (=> (= (implstate i) 5)        ; if the door is open 
+;       (= (implstate (+ i 1)) 1)) ; if the door is locked with 0 attempts
+;   ; else
+;)
 
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
