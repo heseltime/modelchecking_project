@@ -173,13 +173,6 @@
         )
 )
 
-; old code 
-;(define-fun impl_C_does_not_close_door ((i Int)) Bool 
-;   (=> (= (implstate i) 5)        ; if the door is open 
-;       (= (implstate (+ i 1)) 1)) ; if the door is locked with 0 attempts
-;   ; else
-;)
-
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
