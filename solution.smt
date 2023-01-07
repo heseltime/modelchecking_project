@@ -89,7 +89,7 @@
 (define-fun ignore_accept ((i Int)) Bool (=>
     (and
         ((_ is accept) (keypresses i))
-        (not ((_ is open) (keypadstate i))))
+        (not ((_ is unlocked) (keypadstate i)))) ; edited: now unlocked, was open
     (= (keypadstate (+ i 1)) (keypadstate i))))
 
 (define-fun ignore_skip ((i Int)) Bool (=>
