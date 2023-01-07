@@ -34,7 +34,7 @@
     ((_ is open) (keypadstate i)))
 
 (define-fun start () Int 0)
-(define-fun end () Int 6)
+(define-fun end () Int 30)
 
 ;
 ; SPECIFICATION ENCODING
@@ -165,12 +165,18 @@
 (define-fun impl_skip ((i Int)) Bool
     (= (implstate (+ i 1)) (implstate i)))
 
+;
+; POTENTIAL BUG ENCODING COMES HERE/EDIT HERE
+;
+
+
+
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
-    (=> ((_ is skip) (keypresses i)) (impl_skip i))))
+    (=> ((_ is skip) (keypresses i)) (impl_skip i)))) ; CALL POTENTIAL BUG ENCODING NEXT LINE/EDIT
 
 ; coded state-start is 1
 (assert (= (implstate 0) 1))
@@ -203,5 +209,8 @@
 (eval (keypresses 3))
 (eval (keypresses 4))
 (eval (keypresses 5))
+; one added for checking
+(eval (keypresses 6))
+; prob want to evaluate 30
 
 (exit)
