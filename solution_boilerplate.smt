@@ -34,7 +34,7 @@
     ((_ is open) (keypadstate i)))
 
 (define-fun start () Int 0)
-(define-fun end () Int 30)
+(define-fun end () Int 7)
 
 ;
 ; SPECIFICATION ENCODING
