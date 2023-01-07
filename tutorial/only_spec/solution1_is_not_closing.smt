@@ -77,11 +77,12 @@
 (define-fun is_open ((i Int)) Bool
     ((_ is open) (keypadstate i)))
 
-
-;; The door is not closed and locked after changing the stored PIN
-(define-fun not_closed_after_change ((i Int)) Bool (=> 
-    
-
+; is_not_closing when pressing C 
+(define-fun is_not_closing ((i Int)) Bool (=>
+    (and
+        ((_ is open) (keypadstate i))
+        ((_ is skip) (keypresses i)))
+        (not (= (keypadstate (+ i 1)) (locked 0)))
 ))
 
 (define-fun start () Int 0)
@@ -106,7 +107,7 @@
         (keypress_blocked i)
         (ignore_accept i)
         (ignore_skip i)
-        (not_closed_after_change i)))))
+        (is_not_closing i)))))
 
 (declare-fun implstate (Int) Int)
 
@@ -150,9 +151,8 @@
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
-    (=> ((_ is skip) (keypresses i)) (impl_skip i)) 
-    (=> ((_ is wrongpin) (keypresses i)) (impl_blocked_before_3_attemps i))
-    ))
+    (=> ((_ is skip) (keypresses i)) (impl_skip i))     
+))
 
 (define-fun impl_is_open ((i Int)) Bool
     (= (implstate i) 0))
