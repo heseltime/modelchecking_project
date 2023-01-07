@@ -78,10 +78,16 @@
     ((_ is open) (keypadstate i)))
 
 
-; The door can be opened after introducing three incorrect PIN
-(define-fun open_in_blocked_state ((i Int)) Bool (=>
-    ((_ is blocked) (keypadstate i)) ; if the door is blocked
-    (= (keypadstate (+ i 1)) (keypadstate 0)) ; it opens 
+;; A locked door can be unlocked without introducing the correct PIN.
+(define-fun unauth_unlocking ((i Int)) Bool (=>
+
+    ;; if the door is locked in one of the three locking phases aka not open 
+    (not((_ is open) (keypadstate i))) 
+        ;; then if wrong pin is given 
+        (=> ((_ is wrongpin) (keypresses i))
+            ;; then
+            (= (keypadstate (+ i 1)) unlocked)
+        )    
 ))
 
 (define-fun start () Int 0)
@@ -106,7 +112,7 @@
         (keypress_blocked i)
         (ignore_accept i)
         (ignore_skip i)
-        (open_in_blocked_state i)))))
+        (unauth_unlocking i)))))
 
 (declare-fun implstate (Int) Int)
 
@@ -145,22 +151,13 @@
 (define-fun impl_skip ((i Int)) Bool
     (= (implstate (+ i 1)) (implstate i)))
 
-; The door can be opened after introducing three incorrect PIN
-(define-fun impl_open_in_blocked_state ((i Int)) Bool 
-    
-    (=> (= (implstate i) 4) ; if door is blocked
-        (= (implstate (+ i 1)) 5) ; can be opened
-    )
-)
-
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
     (=> ((_ is skip) (keypresses i)) (impl_skip i)) 
-    (=> ((_ is accept) (keypresses i)) (impl_open_in_blocked_state i)) ; wrong pin unlocks door --> key accept will evaluate 
-    ))
+))
 
 (define-fun impl_is_open ((i Int)) Bool
     (= (implstate i) 0))

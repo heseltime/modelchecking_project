@@ -78,10 +78,13 @@
     ((_ is open) (keypadstate i)))
 
 
-; The door can be opened after introducing three incorrect PIN
-(define-fun open_in_blocked_state ((i Int)) Bool (=>
-    ((_ is blocked) (keypadstate i)) ; if the door is blocked
-    (= (keypadstate (+ i 1)) (keypadstate 0)) ; it opens 
+; Unlocking the door does not reset the attempt counter
+(define-fun unlock_not_reset((i Int)) Bool (=>
+    (and    
+        ((_ is locked) (keypadstate i))
+        ((_ is unlocked) (keypadstate (+ i 1)))
+    )
+    ((_ is locked) (keypadstate (+ i 2)))   ; state is unlocked, but we need the number of attempts
 ))
 
 (define-fun start () Int 0)
@@ -106,7 +109,7 @@
         (keypress_blocked i)
         (ignore_accept i)
         (ignore_skip i)
-        (open_in_blocked_state i)))))
+        (unlock_not_reset i)))))
 
 (declare-fun implstate (Int) Int)
 
@@ -145,22 +148,14 @@
 (define-fun impl_skip ((i Int)) Bool
     (= (implstate (+ i 1)) (implstate i)))
 
-; The door can be opened after introducing three incorrect PIN
-(define-fun impl_open_in_blocked_state ((i Int)) Bool 
-    
-    (=> (= (implstate i) 4) ; if door is blocked
-        (= (implstate (+ i 1)) 5) ; can be opened
-    )
-)
 
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
-    (=> ((_ is skip) (keypresses i)) (impl_skip i)) 
-    (=> ((_ is accept) (keypresses i)) (impl_open_in_blocked_state i)) ; wrong pin unlocks door --> key accept will evaluate 
-    ))
+    (=> ((_ is skip) (keypresses i)) (impl_skip i))  
+))
 
 (define-fun impl_is_open ((i Int)) Bool
     (= (implstate i) 0))
