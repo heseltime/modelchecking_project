@@ -34,7 +34,7 @@
     ((_ is open) (keypadstate i)))
 
 (define-fun start () Int 0)
-(define-fun end () Int 7)
+(define-fun end () Int 30)
 
 ;
 ; SPECIFICATION ENCODING
@@ -96,6 +96,18 @@
     ((_ is skip) (keypresses i))
     (= (keypadstate (+ i 1)) (keypadstate i))))
 
+;
+; START EDIT HERE:
+; POTENTIAL BUG ENCODING COMES HERE (1)
+;
+
+
+
+;
+;
+;
+;
+
 ; check attempts are correct (valid_state)
 (assert (forall ((i Int)) (=>
     (and (<= start i) (<= i end))
@@ -116,7 +128,19 @@
         (keypress_open i)
         (keypress_blocked i)
         (ignore_accept i)
-        (ignore_skip i)))))
+        (ignore_skip i)
+        ;
+        ; BUG ENCODING REFERENCE COMES HERE (2)
+        ;
+
+        ;
+        ;
+        ;
+    ))))
+
+;
+; END OF EDIT HERE
+;
 
 ;
 ; IMPLEMENTATION ENCODING
@@ -165,24 +189,14 @@
 (define-fun impl_skip ((i Int)) Bool
     (= (implstate (+ i 1)) (implstate i)))
 
-;
-; START EDIT HERE:
-; POTENTIAL BUG ENCODING COMES HERE 1
-;
-
-
 
 (define-fun impl_keypress ((i Int)) Bool (and
     (=> ((_ is partialpin) (keypresses i)) (impl_partial_pin i))
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
-    (=> ((_ is skip) (keypresses i)) (impl_skip i)))) ; CALL POTENTIAL BUG ENCODING NEXT LINE/EDIT HERE 2
+    (=> ((_ is skip) (keypresses i)) (impl_skip i)))) 
 
-
-;
-; END OF EDIT HERE
-;
 
 ; coded state-start is 1
 (assert (= (implstate 0) 1))
@@ -215,8 +229,29 @@
 (eval (keypresses 3))
 (eval (keypresses 4))
 (eval (keypresses 5))
-; one added for checking
 (eval (keypresses 6))
-; prob want to evaluate 30
+(eval (keypresses 7))
+(eval (keypresses 8))
+(eval (keypresses 9))
+(eval (keypresses 10))
+(eval (keypresses 11))
+(eval (keypresses 12))
+(eval (keypresses 13))
+(eval (keypresses 14))
+(eval (keypresses 15))
+(eval (keypresses 16))
+(eval (keypresses 17))
+(eval (keypresses 18))
+(eval (keypresses 19))
+(eval (keypresses 20))
+(eval (keypresses 21))
+(eval (keypresses 22))
+(eval (keypresses 23))
+(eval (keypresses 24))
+(eval (keypresses 25))
+(eval (keypresses 26))
+(eval (keypresses 27))
+(eval (keypresses 28))
+(eval (keypresses 29))
 
 (exit)

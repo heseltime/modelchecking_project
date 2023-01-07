@@ -78,16 +78,15 @@
     ((_ is open) (keypadstate i)))
 
 
-; A locked door can be unlocked without introducing the correct PIN.
+; bug: A locked door can be unlocked without introducing the correct PIN.
 (define-fun unauth_unlocking ((i Int)) Bool (=>
-
     ; if the door is locked in one of the three locking phases aka not open 
     (not((_ is open) (keypadstate i))) 
-        ; then if wrong pin is given 
-        (=> ((_ is wrongpin) (keypresses i))
-            ; then
-            (= (keypadstate (+ i 1)) (keypadstate i))
-        )    
+    ; then if wrong pin is given 
+    (=> ((_ is wrongpin) (keypresses i))
+        ; then
+        (= (keypadstate (+ i 1)) (keypadstate i))
+    )    
 ))
 
 (define-fun start () Int 0)

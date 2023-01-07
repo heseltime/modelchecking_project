@@ -101,12 +101,14 @@
 ; POTENTIAL BUG ENCODING COMES HERE (1)
 ;
 
-; bug : is_not_closing when pressing C 
-(define-fun is_not_closing ((i Int)) Bool (=>
-    (and
-        ((_ is open) (keypadstate i))
-        ((_ is skip) (keypresses i)))
-    (= (keypadstate (+ i 1)) (locked 0))))
+; bug: Unlocking the door does not reset the attempt counter
+(define-fun unlock_not_reset((i Int)) Bool (=>
+    (and    
+        ((_ is locked) (keypadstate i))
+        ((_ is unlocked) (keypadstate (+ i 1)))
+    )
+    ((_ is locked) (keypadstate (+ i 2)))   ; state is unlocked, but we need the number of attempts
+))
 
 ;
 ;
@@ -137,7 +139,7 @@
         ;
         ; BUG ENCODING REFERENCE COMES HERE (2)
         ;
-        (is_not_closing i)
+        (unlock_not_reset i)
         ;
         ;
         ;

@@ -101,12 +101,16 @@
 ; POTENTIAL BUG ENCODING COMES HERE (1)
 ;
 
-; bug : is_not_closing when pressing C 
-(define-fun is_not_closing ((i Int)) Bool (=>
-    (and
-        ((_ is open) (keypadstate i))
-        ((_ is skip) (keypresses i)))
-    (= (keypadstate (+ i 1)) (locked 0))))
+; bug: A locked door can be unlocked without introducing the correct PIN.
+(define-fun unauth_unlocking ((i Int)) Bool (=>
+    ; if the door is locked in one of the three locking phases aka not open 
+    (not((_ is open) (keypadstate i))) 
+    ; then if wrong pin is given 
+    (=> ((_ is wrongpin) (keypresses i))
+        ; then
+        (= (keypadstate (+ i 1)) (keypadstate i))
+    )    
+))
 
 ;
 ;
@@ -137,7 +141,7 @@
         ;
         ; BUG ENCODING REFERENCE COMES HERE (2)
         ;
-        (is_not_closing i)
+        (unauth_unlocking i)
         ;
         ;
         ;

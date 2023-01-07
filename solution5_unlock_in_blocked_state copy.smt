@@ -101,12 +101,11 @@
 ; POTENTIAL BUG ENCODING COMES HERE (1)
 ;
 
-; bug : is_not_closing when pressing C 
-(define-fun is_not_closing ((i Int)) Bool (=>
-    (and
-        ((_ is open) (keypadstate i))
-        ((_ is skip) (keypresses i)))
-    (= (keypadstate (+ i 1)) (locked 0))))
+; bug: The door can be opened after introducing three incorrect PIN
+(define-fun open_in_blocked_state ((i Int)) Bool (=>
+    ((_ is blocked) (keypadstate i)) ; if the door is blocked
+    (= (keypadstate (+ i 1)) (keypadstate 0)) ; it opens 
+))
 
 ;
 ;
@@ -137,7 +136,7 @@
         ;
         ; BUG ENCODING REFERENCE COMES HERE (2)
         ;
-        (is_not_closing i)
+        (open_in_blocked_state i)
         ;
         ;
         ;

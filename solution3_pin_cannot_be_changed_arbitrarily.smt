@@ -101,12 +101,17 @@
 ; POTENTIAL BUG ENCODING COMES HERE (1)
 ;
 
-; bug : is_not_closing when pressing C 
-(define-fun is_not_closing ((i Int)) Bool (=>
-    (and
-        ((_ is open) (keypadstate i))
-        ((_ is skip) (keypresses i)))
-    (= (keypadstate (+ i 1)) (locked 0))))
+; bug: The stored PIN cannot be changed into any arbitrary PIN
+(define-fun no_arbitary_change_of_pin ((i Int)) Bool (=>
+    ; pin is changed in state unlocked
+    ((_ is unlocked) (keypadstate i)) 
+    ; pin can be correct or wrong relative to the previous correct one
+    ; in the next state, locked 0 (attempts)
+    (and (or    ((_ is wrongpin) (keypresses i))
+                ((_ is correctpin) (keypresses i)))
+        (= (keypadstate (+ i 1)) (locked 0))
+    )    
+))
 
 ;
 ;
@@ -137,7 +142,7 @@
         ;
         ; BUG ENCODING REFERENCE COMES HERE (2)
         ;
-        (is_not_closing i)
+        (no_arbitary_change_of_pin i)
         ;
         ;
         ;
