@@ -1,4 +1,4 @@
-; 2023-01-08
+; 2023-01-08, Modelchecking Project, Merel and Jack
 ;
 ; This code is based on the tutorial files' SMT example from December 15th (Adrian Rebola Pardo, JKU):
 ; As described in the project description, we needed this basis to work from to hand in a solution, i.e.
@@ -89,7 +89,7 @@
 (define-fun ignore_accept ((i Int)) Bool (=>
     (and
         ((_ is accept) (keypresses i))
-        (not ((_ is open) (keypadstate i))))
+        (not ((_ is unlocked) (keypadstate i)))) ; edited: now unlocked, was open
     (= (keypadstate (+ i 1)) (keypadstate i))))
 
 (define-fun ignore_skip ((i Int)) Bool (=>
@@ -140,7 +140,7 @@
     (=> (<= (implstate i) 4)
         (and
             (=> (= (implstate i) 0)
-                (= (implstate (+ i 1)) (+ (implstate i) 1)))
+                (= (implstate (+ i 1)) 1)) ; edited
             (=> (not (= (implstate i) 0))
                 (= (implstate (+ i 1)) 0))))
     (=> (> (implstate i) 4)
@@ -150,7 +150,7 @@
     (=> (<= (implstate i) 4)
         (and
             (=> (= (implstate i) 0)
-                (= (implstate (+ i 1)) (+ (implstate i) 1)))
+                (= (implstate (+ i 1)) 1)) ; edited
             (=> (not (= (implstate i) 0))
                 (= (implstate (+ i 1)) (+ (implstate i) 1)))))
     (=> (> (implstate i) 4)
