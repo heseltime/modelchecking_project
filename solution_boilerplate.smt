@@ -166,7 +166,8 @@
     (= (implstate (+ i 1)) (implstate i)))
 
 ;
-; POTENTIAL BUG ENCODING COMES HERE/EDIT HERE
+; START EDIT HERE:
+; POTENTIAL BUG ENCODING COMES HERE 1
 ;
 
 
@@ -176,7 +177,12 @@
     (=> ((_ is correctpin) (keypresses i)) (impl_correct_pin i))
     (=> ((_ is wrongpin) (keypresses i)) (impl_wrong_pin i))
     (=> ((_ is accept) (keypresses i)) (impl_accept i))
-    (=> ((_ is skip) (keypresses i)) (impl_skip i)))) ; CALL POTENTIAL BUG ENCODING NEXT LINE/EDIT
+    (=> ((_ is skip) (keypresses i)) (impl_skip i)))) ; CALL POTENTIAL BUG ENCODING NEXT LINE/EDIT HERE 2
+
+
+;
+; END OF EDIT HERE
+;
 
 ; coded state-start is 1
 (assert (= (implstate 0) 1))
